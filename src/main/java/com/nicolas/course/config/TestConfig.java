@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile;
 
 import com.nicolas.course.entities.Order;
 import com.nicolas.course.entities.User;
+import com.nicolas.course.entities.enums.OrderStatus;
 import com.nicolas.course.repositories.OrderRepository;
 import com.nicolas.course.repositories.UserRepository;
 
@@ -30,9 +31,9 @@ public class TestConfig implements CommandLineRunner {
                 "nicolasnicolas");
         User u2 = new User(null, "Rodson", "rodson@email.com", "11999999999",
                 "rodsonrodson");
-        Order o1 = new Order(null, Instant.parse("2024-02-20T19:53:07Z"), u1);
-        Order o2 = new Order(null, Instant.parse("2024-03-19T19:53:07Z"), u1);
-        Order o3 = new Order(null, Instant.parse("2024-01-20T19:53:07Z"), u2);
+        Order o1 = new Order(null, Instant.parse("2024-02-20T19:53:07Z"), u1, OrderStatus.PAID);
+        Order o2 = new Order(null, Instant.parse("2024-03-19T19:53:07Z"), u1, OrderStatus.WAITING_PAYMENT);
+        Order o3 = new Order(null, Instant.parse("2024-01-20T19:53:07Z"), u2, OrderStatus.WAITING_PAYMENT);
 
         userRepository.saveAll(List.of(u1, u2));
         orderRepository.saveAll(List.of(o1, o2, o3));

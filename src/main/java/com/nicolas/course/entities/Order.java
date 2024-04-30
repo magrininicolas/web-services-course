@@ -3,6 +3,7 @@ package com.nicolas.course.entities;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nicolas.course.entities.enums.OrderStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +23,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Order {
 
@@ -34,6 +34,23 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private User client;
-    // private OrderStatus status;
+    private Integer status;
     // private Payment payment;
+
+    public Order(Long id, Instant moment, User client, OrderStatus status) {
+        this.id = id;
+        this.moment = moment;
+        this.client = client;
+        this.setOrderStatus(status);
+    }
+
+    public OrderStatus getOrderStatus() {
+        return OrderStatus.valueOf(this.status);
+    }
+
+    public void setOrderStatus(OrderStatus status) {
+        if (status != null) {
+            this.status = status.getCode();
+        }
+    }
 }
