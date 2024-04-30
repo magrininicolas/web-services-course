@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -17,25 +19,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tb_category")
+@Table(name = "tb_products")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Category implements Serializable {
+public class Product implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String description;
+    private Double price;
+    private String imgURL;
+    @ManyToMany
     @Setter(AccessLevel.NONE)
-    @ManyToMany(mappedBy = "categories")
-    private Set<Product> products = new HashSet<>();
+    @JoinTable(name = "categories_products", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private Set<Category> categories = new HashSet<>();
 
-    public Category(Long id, String name) {
+    public Product(Long id, String name, String description, Double price, String imgURL) {
         this.id = id;
         this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imgURL = imgURL;
     }
 
 }
