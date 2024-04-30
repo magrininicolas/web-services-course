@@ -3,13 +3,16 @@ package com.nicolas.course.config;
 import java.time.Instant;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.nicolas.course.entities.Category;
 import com.nicolas.course.entities.Order;
 import com.nicolas.course.entities.User;
 import com.nicolas.course.entities.enums.OrderStatus;
+import com.nicolas.course.repositories.CategoryRepository;
 import com.nicolas.course.repositories.OrderRepository;
 import com.nicolas.course.repositories.UserRepository;
 
@@ -17,16 +20,21 @@ import com.nicolas.course.repositories.UserRepository;
 @Profile("test")
 public class TestConfig implements CommandLineRunner {
 
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
     private OrderRepository orderRepository;
 
-    public TestConfig(UserRepository userRepository, OrderRepository orderRepository) {
-        this.userRepository = userRepository;
-        this.orderRepository = orderRepository;
-    }
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public void run(String... args) throws Exception {
+        Category cat1 = new Category(null, "Electronics");
+        Category cat2 = new Category(null, "Books");
+        Category cat3 = new Category(null, "Computers");
+
         User u1 = new User(null, "Nicolas", "nicolas@email.com", "11888888888",
                 "nicolasnicolas");
         User u2 = new User(null, "Rodson", "rodson@email.com", "11999999999",
@@ -37,5 +45,6 @@ public class TestConfig implements CommandLineRunner {
 
         userRepository.saveAll(List.of(u1, u2));
         orderRepository.saveAll(List.of(o1, o2, o3));
+        categoryRepository.saveAll(List.of(cat1, cat2, cat3));
     }
 }
