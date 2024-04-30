@@ -46,6 +46,17 @@ public class TestConfig implements CommandLineRunner {
         Product p4 = new Product(null, "PC Gamer", "Donec aliquet odio ac rhoncus cursus.", 1200.0, "");
         Product p5 = new Product(null, "Rails for Dummies", "Cras fringilla convallis sem vel faucibus.", 100.99, "");
 
+        categoryRepository.saveAll(List.of(cat1, cat2, cat3));
+        productRepository.saveAll(List.of(p1, p2, p3, p4, p5));
+
+        p1.getCategories().add(cat2);
+        p2.getCategories().addAll(List.of(cat1, cat3));
+        p3.getCategories().add(cat3);
+        p4.getCategories().add(cat3);
+        p5.getCategories().add(cat2);
+
+        productRepository.saveAll(List.of(p1, p2, p3, p4, p5));
+
         User u1 = new User(null, "Nicolas", "nicolas@email.com", "11888888888",
                 "nicolasnicolas");
         User u2 = new User(null, "Rodson", "rodson@email.com", "11999999999",
@@ -56,7 +67,5 @@ public class TestConfig implements CommandLineRunner {
 
         userRepository.saveAll(List.of(u1, u2));
         orderRepository.saveAll(List.of(o1, o2, o3));
-        categoryRepository.saveAll(List.of(cat1, cat2, cat3));
-        productRepository.saveAll(List.of(p1, p2, p3, p4, p5));
     }
 }
