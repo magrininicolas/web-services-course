@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -36,13 +38,13 @@ public class Product implements Serializable {
     private Double price;
     private String imgURL;
     @Setter(AccessLevel.NONE)
-    @ManyToMany(mappedBy = "products")
-    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
-    @Setter(AccessLevel.NONE)
     @JsonIgnore
+    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "id.product")
-    private Set<OrderItem> products = new HashSet<>();
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product(Long id, String name, String description, Double price, String imgURL) {
         this.id = id;
@@ -50,6 +52,15 @@ public class Product implements Serializable {
         this.description = description;
         this.price = price;
         this.imgURL = imgURL;
+    }
+
+    @JsonIgnore
+    public Set<Order> getOrders() {
+        Set<Order> set = new HashSet<>();
+        for (OrderItem x : items) {
+            set.add(x.getOrder());
+        }
+        return set;
     }
 
 }
