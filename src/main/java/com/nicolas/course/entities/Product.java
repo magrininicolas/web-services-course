@@ -10,9 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -40,6 +39,10 @@ public class Product implements Serializable {
     @ManyToMany(mappedBy = "products")
     @JsonIgnore
     private Set<Category> categories = new HashSet<>();
+    @Setter(AccessLevel.NONE)
+    @JsonIgnore
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> products = new HashSet<>();
 
     public Product(Long id, String name, String description, Double price, String imgURL) {
         this.id = id;
