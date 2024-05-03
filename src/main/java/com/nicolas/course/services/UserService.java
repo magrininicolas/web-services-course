@@ -1,12 +1,15 @@
 package com.nicolas.course.services;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.nicolas.course.entities.User;
 import com.nicolas.course.repositories.UserRepository;
+import com.nicolas.course.services.exceptions.DatabaseException;
+import com.nicolas.course.services.exceptions.UserNotFoundException;
 
 @Service
 public class UserService {
@@ -24,7 +27,7 @@ public class UserService {
     public User findById(Long id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 
     public User createUser(User user) {
@@ -33,13 +36,37 @@ public class UserService {
 
     public User updateUser(User user, Long id) {
         User oldUser = findById(id);
-        oldUser.setName(user.getName());
-        oldUser.setEmail(user.getEmail());
-        oldUser.setPhone(user.getPhone());
+        updateData(user, oldUser);
         return oldUser;
     }
 
     public void deleteUser(Long id) {
-        userRepository.delete(findById(id));
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User not found with id: " + id);
+        }
+        try {
+            userRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Database error: " + e.getMessage());
+        }
     }
+
+    private void updateData(User user, User oldUser) {
+        if (user != null) {
+            if (isNotBlankOrNull(user.getName())) {
+                oldUser.setName(user.getName());
+            }
+            if (isNotBlankOrNull(user.getEmail())) {
+                oldUser.setEmail(user.getEmail());
+            }
+            if (isNotBlankOrNull(user.getPhone())) {
+                oldUser.setPhone(user.getPhone());
+            }
+        }
+    }
+
+    private boolean isNotBlankOrNull(String str) {
+        return str != null && !str.trim().isEmpty();
+    }
+
 }
